@@ -10,7 +10,7 @@ directions_dict: dict[str, complex] = {char: 1j**i for i in range(4) for char in
 
 
 def in_bounds(coords: complex) -> bool:
-    return coords.real in range(len(char_grid[0])) and coords.imag in range(len(char_grid))
+    return (coords.real in range(len(char_grid[0])) and coords.imag in range(len(char_grid)))
 
 
 pointer: complex = 0 + 0j
