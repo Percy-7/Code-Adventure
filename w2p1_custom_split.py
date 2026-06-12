@@ -1,7 +1,10 @@
+from time import perf_counter
 from collections.abc import Generator
 from functools import cache
 from re import findall
 
+
+t1=perf_counter()
 # from re import findall, finditer
 
 # with open('w2p2.txt') as input:
@@ -52,8 +55,8 @@ def batches_of_two(count: int, char: str) -> str:
 
 
 
-# input_sequence: Generator[str] = (i for i in '11212')
-input_sequence: Generator[str] = (i for i in '12111112121112111212212112111212')
+input_sequence: Generator[str] = (i for i in '11212')
+# input_sequence: Generator[str] = (i for i in '12111112121112111212212112111212')
 
 
 
@@ -84,19 +87,21 @@ def compress(sequence: Generator[str]):
             current_char = char
             # yield 'what'
         else:
-            yield (count, current_char)
+            # yield (count, current_char)
+            yield count
             # yield str(count)
             # yield current_char
             # yield current_char*count
             count = 1
             current_char = char
-    yield (count, current_char)
+    # yield (count, current_char)
+    yield count
     # yield str(count)
     # yield current_char
 
 # print([i for i in compress(input_sequence)])
-# print(sum(i[0] for i in compress(input_sequence)))
-print(sum(i[0]==3 for i in compress(input_sequence)))
+print(sum(i for i in compress(input_sequence)))
+# print(sum(i[0]==3 for i in compress(input_sequence)))
 
 # repetitions = 1
 # count = 0
@@ -138,3 +143,4 @@ print(sum(i[0]==3 for i in compress(input_sequence)))
 
 # print([i for i in split(string_generator)])
 # print(''.join([str(i[0])+i[1] for i in split(string_generator)]))
+print(f' ~ Ran with {perf_counter()-t1} seconds ~ !')
