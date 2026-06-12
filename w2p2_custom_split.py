@@ -7,16 +7,21 @@ from functools import cache
 #     input_sequence: str = input.read()
 
 
+
+
 def split(sequence: Generator[str]):
     current_char: str = next(sequence)
     count: int = 1
     
     for char in sequence:
         # count = 0
-        print(char, current_char, count)
+        # print(char, current_char, count)
         if count == 2:
             # yield (count, current_char, 'yikes')
-            yield (count, current_char)
+            # yield (count, current_char)
+            yield str(count)
+            yield current_char
+            # yield current_char*count
             current_char = char
             count = 1
             continue
@@ -26,23 +31,38 @@ def split(sequence: Generator[str]):
             current_char = char
             # yield 'what'
         else:
-            yield (count, current_char)
+            # yield (count, current_char)
+            yield str(count)
+            yield current_char
+            # yield current_char*count
             count = 1
             current_char = char
-    yield (count, current_char)
+    # yield (count, current_char)
+    yield str(count)
+    yield current_char
+    # yield current_char*count
 
-
-
-
+ 
 @cache
 def batches_of_two(count: int, char: str) -> str:
     return f'2{char}' * (count // 2) + f'1{char}' * (count % 2 != 0)
 
 # input_sequence: Generator[str] = (i for i in '121')
-input_sequence: Generator[str] = (i for i in '121')
 
-# for i in range(3):
-#     input_sequence = (i for i in split(input_sequence))
+
+
+input_sequence: Generator[str] = (i for i in '11212')
+
+
+
+# print([i for i in split(input_sequence)])
+
+for i in range(65):
+    input_sequence = (i for i in split(input_sequence))
+    print(i)
+
+# print(''.join(input_sequence))
+print(len(list(input_sequence)))
 
 # for i in range(65):
 #     text_chunks = (batches_of_two(len(i.group()), i.group()[0]) for i in finditer(r'1+|2+', input_sequence))
