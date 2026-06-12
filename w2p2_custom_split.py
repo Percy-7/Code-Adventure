@@ -1,6 +1,9 @@
 from collections.abc import Generator
 from functools import cache
 from re import findall
+from time import perf_counter
+
+t1 = perf_counter()
 
 # from re import findall, finditer
 
@@ -9,9 +12,8 @@ from re import findall
 
 
 
-
-def split(sequence: Generator[str]):
-    current_char: str = next(sequence)
+def split(sequence: Generator[int]):
+    current_char: int = next(sequence)
     count: int = 1
     
     for char in sequence:
@@ -20,7 +22,7 @@ def split(sequence: Generator[str]):
         if count == 2:
             # yield (count, current_char, 'yikes')
             # yield (count, current_char)
-            yield str(count)
+            yield count
             yield current_char
             # yield current_char*count
             current_char = char
@@ -33,13 +35,13 @@ def split(sequence: Generator[str]):
             # yield 'what'
         else:
             # yield (count, current_char)
-            yield str(count)
+            yield count
             yield current_char
             # yield current_char*count
             count = 1
             current_char = char
     # yield (count, current_char)
-    yield str(count)
+    yield count
     yield current_char
     # yield current_char*count
 
@@ -53,7 +55,9 @@ def batches_of_two(count: int, char: str) -> str:
 
 
 # input_sequence: Generator[str] = (i for i in '11212')
-input_sequence: Generator[str] = (i for i in '12111112121112111212212112111212')
+# input_sequence: Generator[int] = (i for i in '12111112121112111212212112111212')
+# input_sequence: Generator[int] = (int(i) for i in '121')
+input_sequence: Generator[int] = (int(i) for i in '12111112121112111212212112111212')
 
 
 
@@ -67,12 +71,12 @@ print('loop done!')
     # print(i)
 
 # print(str(input_sequence))
-# print(len(findall(r'1{3}|2{3}', ''.join(input_sequence))))
+# print(len(findall(r'1{3}|2{3}', ''.join([str(i) for i in input_sequence]))))
 # print(sum(1 for _ in input_sequence))
 
 
-def compress(sequence: Generator[str]):
-    current_char: str = next(sequence)
+def compress(sequence: Generator[int]):
+    current_char: int = next(sequence)
     count: int = 1
     
     for char in sequence:
@@ -84,19 +88,27 @@ def compress(sequence: Generator[str]):
             current_char = char
             # yield 'what'
         else:
-            yield (count, current_char)
+            # yield (count, current_char)
+            # yield count
             # yield str(count)
             # yield current_char
             # yield current_char*count
             count = 1
             current_char = char
-    yield (count, current_char)
+        if count==3:
+            yield count
+    # yield (count, current_char)
+    if count==3:
+        yield count
     # yield str(count)
     # yield current_char
+    
+
 
 # print([i for i in compress(input_sequence)])
 # print(sum(i[0] for i in compress(input_sequence)))
-print(sum(i[0]==3 for i in compress(input_sequence)))
+# print(sum(i==3 for i in compress(input_sequence)))
+print(sum(1 for i in compress(input_sequence)))
 
 # repetitions = 1
 # count = 0
@@ -138,3 +150,4 @@ print(sum(i[0]==3 for i in compress(input_sequence)))
 
 # print([i for i in split(string_generator)])
 # print(''.join([str(i[0])+i[1] for i in split(string_generator)]))
+print(f' ~ Ran with {perf_counter()-t1} seconds ~ !')
