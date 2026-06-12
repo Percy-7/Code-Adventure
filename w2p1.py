@@ -11,7 +11,7 @@ def batches_of_two(count: int, char: str) -> str:
 
 
 for i in range(65):
-    text_chunks = [batches_of_two(len(i), i[0]) for i in findall(r'1+|2+', input_sequence)]
+    text_chunks = (batches_of_two(len(i), i[0]) for i in findall(r'1+|2+', input_sequence))
     input_sequence = ''.join(text_chunks)
 
-print(len(''.join(text_chunks)))
+print(batches_of_two.cache_info())
