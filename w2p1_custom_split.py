@@ -1,8 +1,5 @@
-from time import perf_counter
 from collections.abc import Generator
-from functools import cache
-from re import findall
-
+from time import perf_counter
 
 t1=perf_counter()
 # from re import findall, finditer
@@ -13,8 +10,8 @@ t1=perf_counter()
 
 
 
-def split(sequence: Generator[str]):
-    current_char: str = next(sequence)
+def split(sequence: Generator[int]):
+    current_char: int = next(sequence)
     count: int = 1
     
     for char in sequence:
@@ -23,7 +20,7 @@ def split(sequence: Generator[str]):
         if count == 2:
             # yield (count, current_char, 'yikes')
             # yield (count, current_char)
-            yield str(count)
+            yield count
             yield current_char
             # yield current_char*count
             current_char = char
@@ -36,26 +33,27 @@ def split(sequence: Generator[str]):
             # yield 'what'
         else:
             # yield (count, current_char)
-            yield str(count)
+            yield count
             yield current_char
             # yield current_char*count
             count = 1
             current_char = char
     # yield (count, current_char)
-    yield str(count)
+    yield count
     yield current_char
     # yield current_char*count
 
  
-@cache
-def batches_of_two(count: int, char: str) -> str:
-    return f'2{char}' * (count // 2) + f'1{char}' * (count % 2 != 0)
+# @cache
+# def batches_of_two(count: int, char: str) -> str:
+#     return f'2{char}' * (count // 2) + f'1{char}' * (count % 2 != 0)
 
 # input_sequence: Generator[str] = (i for i in '121')
 
 
 
-input_sequence: Generator[str] = (i for i in '11212')
+input_sequence: Generator[int] = (int(i) for i in '11212')
+# input_sequence: Generator[int] = (int(i) for i in '121')
 # input_sequence: Generator[str] = (i for i in '12111112121112111212212112111212')
 
 
@@ -69,13 +67,16 @@ for i in range(65):
 print('loop done!')
     # print(i)
 
+# print(len(list(input_sequence)))
+
+
 # print(str(input_sequence))
 # print(len(findall(r'1{3}|2{3}', ''.join(input_sequence))))
 # print(sum(1 for _ in input_sequence))
 
 
-def compress(sequence: Generator[str]):
-    current_char: str = next(sequence)
+def compress(sequence: Generator[int]):
+    current_char: int = next(sequence)
     count: int = 1
     
     for char in sequence:
