@@ -63,7 +63,7 @@ input_sequence: Generator[int] = (int(i) for i in '12111112121112111212212112111
 
 # # print([i for i in split(input_sequence)])
 
-for i in range(65):
+for i in range(64):
     input_sequence = (i for i in split(input_sequence))
     print(i)
 
@@ -108,7 +108,8 @@ def compress(sequence: Generator[int]):
 # print([i for i in compress(input_sequence)])
 # print(sum(i[0] for i in compress(input_sequence)))
 # print(sum(i==3 for i in compress(input_sequence)))
-print(sum(1 for i in compress(input_sequence)))
+# print(sum(1 for i in compress(input_sequence)))
+print(sum(compress(input_sequence)))
 
 # repetitions = 1
 # count = 0

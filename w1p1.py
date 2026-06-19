@@ -1,4 +1,4 @@
-with open('w1.txt') as input:
+with open('w1p1.txt') as input:
     puzzle_input: list[str] = [''.join([j for j in i.strip('\n') if j not in [',', '.', '-', "'"]]) for i in input]
 
 backward_dict: dict[str, str] = dict(zip(puzzle_input[1], puzzle_input[0], strict=True))
