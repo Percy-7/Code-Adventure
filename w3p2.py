@@ -26,12 +26,17 @@ def flip(pancakes: list[tuple[str, int]]) -> list[tuple[str, int]]:
 
 # print(flip([('-', 3), ('+', 2), ('+', 4), ('+', 1)]))
 
+# puzzle_input = [('', 1), ('+', 2), ('+', 3), ('+', 4)]
+# puzzle_input_unsigned = [1, 2, 3, 4]
+
 while size_incomplete_stack != 0:
     
     # id_largest_number = puzzle_input.index(max(numbers_set))
     # numbers_set.remove(puzzle_input[id_largest_number])
     id_largest_number = puzzle_input_unsigned.index(max(numbers_set))
     print(puzzle_input, flips_count, size_incomplete_stack, id_largest_number, numbers_set)
+    # print(size_incomplete_stack)
+    # print(puzzle_input)
     numbers_set.remove(puzzle_input_unsigned[id_largest_number])
     if id_largest_number == size_incomplete_stack - 1 and puzzle_input[0][0] == '+':
         size_incomplete_stack -= 1
