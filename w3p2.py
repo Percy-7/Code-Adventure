@@ -11,7 +11,8 @@ with open('w3p2.txt') as input:
 # print(puzzle_input)
 
 size_incomplete_stack: int = len(puzzle_input)
-numbers_set: set[int] = {i[1] for i in puzzle_input}
+# numbers_set: set[int] = {i[1] for i in puzzle_input}
+numbers_set: set[int] = set(puzzle_input_unsigned)
 flips_count: int = 0
 
 # print(max(numbers_set))
@@ -38,7 +39,8 @@ while size_incomplete_stack != 0:
     # print(size_incomplete_stack)
     # print(puzzle_input)
     numbers_set.remove(puzzle_input_unsigned[id_largest_number])
-    if id_largest_number == size_incomplete_stack - 1 and puzzle_input[0][0] == '+':
+    # if id_largest_number == size_incomplete_stack - 1 and puzzle_input[0][0] == '+':
+    if id_largest_number == size_incomplete_stack - 1 and puzzle_input[id_largest_number][0] == '+':
         size_incomplete_stack -= 1
         continue
     if id_largest_number != 0:
