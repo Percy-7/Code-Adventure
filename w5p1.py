@@ -11,18 +11,29 @@ length = len(puzzle_input[0])
 wall_coords: list = [complex(*divmod(i, 5)[::-1]) for i in (i.start() for i in re.finditer(r'[^07]', ''.join(puzzle_input)))]
 # wall_coords: list = [complex(*divmod(i, 5)) for i in (i.start() for i in re.finditer(r'[^07]', ''.join(puzzle_input)))]
 
+# wall_directions: dict[str, set[complex]] = {
+#     '1': {1, -1},
+#     '2': {1j, -1j},
+#     '3': {-1, -1j},
+#     '4': {1j, -1},
+#     '5': {1, 1j},
+#     '6': {1, -1j},
+# }
+
 wall_directions: dict[str, set[complex]] = {
     '1': {1, -1},
     '2': {1j, -1j},
-    '3': {-1, -1j},
-    '4': {1j, -1},
-    '5': {1, 1j},
-    '6': {1, -1j},
+    '3': {-1, 1j},
+    '4': {-1j, -1},
+    '5': {1, -1j},
+    '6': {1, 1j},
 }
 
 # print(wall_directions)
 # print(wall_coords)
 # print(puzzle_input)
+
+broken_coords: list[complex] = []
 
 def traverse_grid(wall_type: str, wall_coord: complex, entry_direction: complex):
     print(f'running with {wall_type}, on {wall_coord}, entry with {entry_direction}')
@@ -32,6 +43,7 @@ def traverse_grid(wall_type: str, wall_coord: complex, entry_direction: complex)
     
     if wall_type == '7':
         print(f'found broken wall at {wall_coord}')
+        broken_coords.append(wall_coord)
         return
     
     try:
@@ -71,4 +83,5 @@ while wall_coords:
     except KeyError:
         print(wall_type, chosen_coord)
         raise KeyError
-        
+
+print(broken_coords)
