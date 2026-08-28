@@ -1,3 +1,5 @@
+# import moreitertools
+import itertools
 import re
 from collections import defaultdict
 
@@ -31,12 +33,14 @@ wall_directions: dict[str, tuple[complex, complex]] = {
     '6': (1, 1j),
 }
 
-rev_wall_directions: dict[tuple[complex, complex], str] = {v: k for k,v in wall_directions.items()}
+complex_to_wasd: dict[complex, str] = {1: 'd', -1 : 'a', 1j: 's', -1j: 'w'}
+
+rev_wall_directions: dict[tuple[str, str], str] = {tuple(sorted(complex_to_wasd[i] for i in v)): k for k,v in wall_directions.items()}
 
 # reverse_wall_directions = {tuple(sorted(v, key= lambda x: x.real+x.imag)): k for k, v in wall_directions.items()}
 
 broken_coords: list[complex] = []
-broken_walls_directions: defaultdict[complex, list[complex]] = defaultdict(list)
+broken_walls_directions: defaultdict[complex, list[str]] = defaultdict(list)
 
 def traverse_grid(wall_type: str, wall_coord: complex, entry_direction: complex):
     print(f'running with {wall_type}, on {wall_coord}, entry with {entry_direction}')
@@ -45,7 +49,8 @@ def traverse_grid(wall_type: str, wall_coord: complex, entry_direction: complex)
     if wall_type == '7':
         print(f'found broken wall at {wall_coord}')
         broken_coords.append(wall_coord)
-        broken_walls_directions[wall_coord].append(entry_direction)
+        # broken_walls_directions[wall_coord].append(entry_direction)
+        broken_walls_directions[wall_coord].append(complex_to_wasd[entry_direction])
         # print('ran')
         return
     
@@ -97,6 +102,16 @@ print(broken_coords)
 print(broken_walls_directions)
 
 # print(reverse_wall_directions)
-# print([[coord, rev_wall_directions[x if x:=tuple(directions) in [2] else x]] for coord, directions in broken_walls_directions.items()])
+symbol_map = [(coord, rev_wall_directions[tuple(sorted(directions))]) for coord, directions in broken_walls_directions.items()]
+
+# print(sorted([i[1] for i in symbol_map]))
+
+# print([list(i[1]) for i in itertools.groupby(sorted([i[1] for i in symbol_map]), int)])
+# print(list(map(len, [list(i[1]) for i in itertools.groupby(sorted([i[1] for i in symbol_map]), int)])))
+print(''.join(list(map(str, (map(len, [list(i[1]) for i in itertools.groupby(sorted([i[1] for i in symbol_map]), int)]))))))
+
+# for i in itertools.groupby(sorted([i[1] for i in symbol_map]), int):
+#     print([i[0], list(i[1])])
+
 # print([[coord, reverse_wall_directions[sorted(directions)]] for coord, directions in broken_walls_directions.items()])
-# print([[[coord, reverse_wall_directions[tuple(sorted(directions, key= lambda x: x.real+x.imag))]]] for coord, directions in broken_walls_directions.items()])
+# print([[[coord, reverse_wall_directions[tuple(sorted(directions, key= lambda x: x.real+x.imag))]]] for coord, directions in broken_walls_directions.items()] )
