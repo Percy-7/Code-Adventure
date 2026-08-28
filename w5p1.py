@@ -1,5 +1,5 @@
-from collections import defaultdict
 import re
+from collections import defaultdict
 
 with open('w5p1.txt') as input:
     puzzle_input: list[str] = [i.strip() for i in input]
@@ -12,31 +12,28 @@ length = len(puzzle_input[0])
 wall_coords: list = [complex(*divmod(i, 5)[::-1]) for i in (i.start() for i in re.finditer(r'[^07]', ''.join(puzzle_input)))]
 # wall_coords: list = [complex(*divmod(i, 5)) for i in (i.start() for i in re.finditer(r'[^07]', ''.join(puzzle_input)))]
 
+
 # wall_directions: dict[str, set[complex]] = {
 #     '1': {1, -1},
 #     '2': {1j, -1j},
-#     '3': {-1, -1j},
-#     '4': {1j, -1},
-#     '5': {1, 1j},
-#     '6': {1, -1j},
+#     '3': {-1, 1j},
+#     '4': {-1, -1j},
+#     '5': {1, -1j},
+#     '6': {1, 1j},
 # }
 
-wall_directions: dict[str, set[complex]] = {
-    '1': {1, -1},
-    '2': {1j, -1j},
-    '3': {-1, 1j},
-    '4': {-1, -1j},
-    '5': {1, -1j},
-    '6': {1, 1j},
+wall_directions: dict[str, tuple[complex, complex]] = {
+    '1': (1, -1),
+    '2': (1j, -1j),
+    '3': (-1, 1j),
+    '4': (-1, -1j),
+    '5': (1, -1j),
+    '6': (1, 1j),
 }
 
-
+rev_wall_directions: dict[tuple[complex, complex], str] = {v: k for k,v in wall_directions.items()}
 
 # reverse_wall_directions = {tuple(sorted(v, key= lambda x: x.real+x.imag)): k for k, v in wall_directions.items()}
-
-# print(wall_directions)
-# print(wall_coords)
-# print(puzzle_input)
 
 broken_coords: list[complex] = []
 broken_walls_directions: defaultdict[complex, list[complex]] = defaultdict(list)
@@ -44,8 +41,6 @@ broken_walls_directions: defaultdict[complex, list[complex]] = defaultdict(list)
 def traverse_grid(wall_type: str, wall_coord: complex, entry_direction: complex):
     print(f'running with {wall_type}, on {wall_coord}, entry with {entry_direction}')
     
-    
-    current_coord = wall_coord
     
     if wall_type == '7':
         print(f'found broken wall at {wall_coord}')
@@ -59,12 +54,14 @@ def traverse_grid(wall_type: str, wall_coord: complex, entry_direction: complex)
     except ValueError:
         print('fucked at', wall_type, wall_coord, entry_direction)
         # raise ValueError
-        pass
     
     if entry_direction not in wall_directions[wall_type]:
         raise NotImplementedError
     
-    exit_direction: complex = next(iter(wall_directions[wall_type] - {entry_direction}))*-1
+    # exit_direction: complex = next(iter(wall_directions[wall_type] - {entry_direction}))*-1
+    exit_direction: complex = next(iter(set(wall_directions[wall_type]) - {entry_direction}))*-1
+    # exit_direction: complex = [i for wall_directions[wall_type]
+    
     # new_coords = wall_coord + entry_direction + exit_direction
     new_coords = wall_coord + exit_direction
     # traverse_grid(puzzle_input[int(new_coords.real)][int(new_coords.imag)], new_coords, exit_direction)
@@ -90,7 +87,7 @@ while wall_coords:
         print((wall_type, chosen_coord, next(iter(wall_directions[wall_type]))))
         entry_direction  = next(iter(wall_directions[wall_type]))
         traverse_grid(wall_type, chosen_coord, entry_direction)
-        traverse_grid(wall_type, chosen_coord, next(iter(wall_directions[wall_type] - {entry_direction})))
+        traverse_grid(wall_type, chosen_coord, next(iter(set(wall_directions[wall_type]) - {entry_direction})))
     except KeyError:
         print(wall_type, chosen_coord)
         
@@ -100,5 +97,6 @@ print(broken_coords)
 print(broken_walls_directions)
 
 # print(reverse_wall_directions)
+# print([[coord, rev_wall_directions[x if x:=tuple(directions) in [2] else x]] for coord, directions in broken_walls_directions.items()])
 # print([[coord, reverse_wall_directions[sorted(directions)]] for coord, directions in broken_walls_directions.items()])
 # print([[[coord, reverse_wall_directions[tuple(sorted(directions, key= lambda x: x.real+x.imag))]]] for coord, directions in broken_walls_directions.items()])
