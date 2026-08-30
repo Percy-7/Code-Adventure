@@ -11,7 +11,7 @@ with open('w5p1.txt') as input:
 length = len(puzzle_input[0])
 # wall_coords = re.findall(r'[^0]', puzzle_input_flattened)
 # wall_coords: list = [complex(*divmod(i, 5)) for i in (i.start() for i in re.finditer(r'[^07]', ''.join(puzzle_input)))]
-wall_coords: list = [complex(*divmod(i, 5)[::-1]) for i in (i.start() for i in re.finditer(r'[^07]', ''.join(puzzle_input)))]
+wall_coords: list = [complex(*divmod(i, length)[::-1]) for i in (i.start() for i in re.finditer(r'[^07]', ''.join(puzzle_input)))]
 # wall_coords: list = [complex(*divmod(i, 5)) for i in (i.start() for i in re.finditer(r'[^07]', ''.join(puzzle_input)))]
 
 
