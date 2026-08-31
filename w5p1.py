@@ -1,12 +1,15 @@
-import re
 from collections import defaultdict
+from re import finditer
 
 with open('w5p1.txt') as input:
     puzzle_input: list[str] = [i.strip() for i in input]
     puzzle_input_flattened: str = ''.join(puzzle_input)
 
-length = len(puzzle_input[0])
-wall_coords: set[complex] = {complex(*divmod(i, length)[::-1]) for i in (i.start() for i in re.finditer(r'[^07]', ''.join(puzzle_input)))}
+length: int = len(puzzle_input[0])
+wall_coords: set[complex] = {
+    complex(*divmod(i, length)[::-1]) for i in (i.start() for i in finditer(r'[^07]', ''.join(puzzle_input)))
+}
+broken_walls_directions: defaultdict[complex, list[complex]] = defaultdict(list)
 
 wall_directions: dict[str, frozenset[complex]] = {
     '1': frozenset([1, -1]),
@@ -19,26 +22,24 @@ wall_directions: dict[str, frozenset[complex]] = {
 
 rev_wall_directions: dict[frozenset[complex], str] = {v: k for k, v in wall_directions.items()}
 
-broken_walls_directions: defaultdict[complex, list[complex]] = defaultdict(list)
 
 def traverse_grid(wall_type: str, wall_coord: complex, entry_direction: complex) -> None:
-    print(f'running with {wall_type}, on {wall_coord}, entry with {entry_direction}')
-    
+
     if wall_type == '7':
-        print(f'found broken wall at {wall_coord}')
         broken_walls_directions[wall_coord].append(entry_direction)
         return
-    
+
     wall_coords.discard(wall_coord)
-    
-    exit_direction: complex = next(iter(wall_directions[wall_type] - {entry_direction}))*-1
-    new_coords = wall_coord + exit_direction
+
+    exit_direction: complex = next(iter(wall_directions[wall_type] - {entry_direction})) * -1
+    new_coords: complex = wall_coord + exit_direction
     traverse_grid(puzzle_input[int(new_coords.imag)][int(new_coords.real)], new_coords, exit_direction)
 
+
 while wall_coords:
-    chosen_coord = next(iter(wall_coords))
-    wall_type = puzzle_input[int(chosen_coord.imag)][int(chosen_coord.real)]
-    entry_direction  = next(iter(wall_directions[wall_type]))
+    chosen_coord: complex = next(iter(wall_coords))
+    wall_type: str = puzzle_input[int(chosen_coord.imag)][int(chosen_coord.real)]
+    entry_direction: complex = next(iter(wall_directions[wall_type]))
     traverse_grid(wall_type, chosen_coord, entry_direction)
     traverse_grid(wall_type, chosen_coord, next(iter(wall_directions[wall_type] - {entry_direction})))
 
