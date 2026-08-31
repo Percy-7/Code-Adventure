@@ -9,28 +9,40 @@ with open('w5p1.txt') as input:
 length = len(puzzle_input[0])
 wall_coords: set[complex] = {complex(*divmod(i, length)[::-1]) for i in (i.start() for i in re.finditer(r'[^07]', ''.join(puzzle_input)))}
 
-wall_directions: dict[str, tuple[complex, complex]] = {
-    '1': (1, -1),
-    '2': (1j, -1j),
-    '3': (-1, 1j),
-    '4': (-1, -1j),
-    '5': (1, -1j),
-    '6': (1, 1j),
+# wall_directions: dict[str, tuple[complex, complex]] = {
+#     '1': (1, -1),
+#     '2': (1j, -1j),
+#     '3': (-1, 1j),
+#     '4': (-1, -1j),
+#     '5': (1, -1j),
+#     '6': (1, 1j),
+# }
+
+wall_directions: dict[str, frozenset[complex]] = {
+    '1': frozenset([1, -1]),
+    '2': frozenset([1j, -1j]),
+    '3': frozenset([-1, 1j]),
+    '4': frozenset([-1, -1j]),
+    '5': frozenset([1, -1j]),
+    '6': frozenset([1, 1j]),
 }
 
-complex_to_wasd: dict[complex, str] = {1: 'd', -1 : 'a', 1j: 's', -1j: 'w'}
+rev_wall_directions: dict[frozenset[complex], str] = {v: k for k, v in wall_directions.items()}
 
-rev_wall_directions: dict[tuple[str, str], str] = {tuple(sorted(complex_to_wasd[i] for i in v)): k for k,v in wall_directions.items()} # type: ignore
+# complex_to_wasd: dict[complex, str] = {1: 'd', -1 : 'a', 1j: 's', -1j: 'w'}
 
-broken_walls_directions: defaultdict[complex, list[str]] = defaultdict(list)
+# rev_wall_directions: dict[tuple[str, str], str] = {tuple(sorted(complex_to_wasd[i] for i in v)): k for k,v in wall_directions.items()} # type: ignore
 
-def traverse_grid(wall_type: str, wall_coord: complex, entry_direction: complex):
+# broken_walls_directions: defaultdict[complex, list[str]] = defaultdict(list)
+broken_walls_directions: defaultdict[complex, list[complex]] = defaultdict(list)
+
+def traverse_grid(wall_type: str, wall_coord: complex, entry_direction: complex) -> None:
     print(f'running with {wall_type}, on {wall_coord}, entry with {entry_direction}')
     
     if wall_type == '7':
         print(f'found broken wall at {wall_coord}')
-        # broken_walls_directions[wall_coord].append(entry_direction)
-        broken_walls_directions[wall_coord].append(complex_to_wasd[entry_direction])
+        broken_walls_directions[wall_coord].append(entry_direction)
+        # broken_walls_directions[wall_coord].append(complex_to_wasd[entry_direction])
         # print('ran')
         return
     
@@ -39,7 +51,6 @@ def traverse_grid(wall_type: str, wall_coord: complex, entry_direction: complex)
     # exit_direction: complex = next(iter(wall_directions[wall_type] - {entry_direction}))*-1
     exit_direction: complex = next(iter(set(wall_directions[wall_type]) - {entry_direction}))*-1
     new_coords = wall_coord + exit_direction
-    # traverse_grid(puzzle_input[int(new_coords.real)][int(new_coords.imag)], new_coords, exit_direction)
     traverse_grid(puzzle_input[int(new_coords.imag)][int(new_coords.real)], new_coords, exit_direction)
 
 while wall_coords:
@@ -52,7 +63,7 @@ while wall_coords:
 
 print(broken_walls_directions)
 
-symbol_map = [(coord, rev_wall_directions[tuple(sorted(directions))]) for coord, directions in broken_walls_directions.items()] # type: ignore
+symbol_map = [(coord, rev_wall_directions[frozenset(directions)]) for coord, directions in broken_walls_directions.items()]
 
 # print(sorted([i[1] for i in symbol_map]))
 
